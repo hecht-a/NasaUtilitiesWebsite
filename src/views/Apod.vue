@@ -24,7 +24,6 @@ export default {
     };
   },
   created() {
-    console.log(this.$route);
     document.title = this.$route.meta.title;
   },
   methods: {

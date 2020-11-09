@@ -26,6 +26,7 @@
 <script>
 import axios from "axios";
 import capitalize from "../functions/capitalize";
+import removeChilds from "@/functions/removeChilds";
 
 export default {
   name: "Search",
@@ -58,6 +59,10 @@ export default {
       }
     }
   },
+  unmounted() {
+    const container = document.querySelector(".container");
+    removeChilds(container, ".center");
+  },
   methods: {
     appendSelect(component, max) {
       for (let i = 1; i <= max; i++) {
@@ -69,18 +74,12 @@ export default {
         component.appendChild(opt);
       }
     },
-    removeChildFromContainer() {
-      const container = document.querySelector(".container");
-      const center = document.querySelector(".center");
-      if (!center) return;
-      container.removeChild(center);
-    },
     getImageArray(url) {
       if (this.searchData === "") return;
       const container = document.querySelector(".container");
       const center = document.createElement("div");
       const getCenter = container.appendChild(center);
-      this.removeChildFromContainer();
+      removeChilds(container, ".center");
       const randArray = [];
       this.errorMessage = "";
       axios
@@ -107,7 +106,6 @@ export default {
                 if (randArray.includes(rand)) {
                   while (randArray.includes(rand)) {
                     rand = Math.floor(Math.random() * items.length);
-                    console.log("rand");
                   }
                 }
                 randArray.push(rand);

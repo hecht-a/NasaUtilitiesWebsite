@@ -65,8 +65,8 @@ export default {
 
     this.map = new mapboxgl.Map({
       container: "map",
-      style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-      zoom: 2 // starting zoom
+      style: "mapbox://styles/mapbox/streets-v11",
+      zoom: 2
     });
 
     this.marker = new mapboxgl.Marker();
