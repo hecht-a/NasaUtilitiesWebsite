@@ -1,0 +1,82 @@
+#map {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 76px);
+    bottom: 0;
+}
+
+@media screen and (max-width: 929px){
+  #map {
+    height: calc(100vh - 60px)
+  }
+
+  .inSpace {
+      max-height: 30vh !important;
+  }
+}
+
+.mapboxgl-canvas {
+    width: 100% !important;
+}
+
+.marker {
+    width: 40px;
+    height: 40px;
+}
+
+.inSpace ul {
+    margin: 0;
+    padding: 0;
+}
+
+.inSpace ul li a {
+    text-decoration: underline;
+    color: rgb(136, 214, 240)
+}
+
+.inSpace {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    z-index: 999;
+    background-color: #343a40ad;
+    color: #fff;
+    width: auto;
+    height: auto;
+    max-height: 20vh;
+    margin: 20px 20px;
+    padding: 10px;
+}
+
+.errorCity {
+    color: #c58b0e;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.cityMarkerTitle {
+    text-align: center;
+}
+
+.cityMarker {
+    margin: 0;
+    padding: 0;
+}
+
+.searchContainerMap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.searchComponentsMap {
+    padding: 0;
+    margin: 0;
+}
+
+#searchMap { 
+  padding: 1px;
+}
