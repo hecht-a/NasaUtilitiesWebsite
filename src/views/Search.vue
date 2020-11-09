@@ -212,8 +212,9 @@ export default {
         }
       });
       div.onclick = e => {
+        const container = document.querySelector("body");
         if (e.srcElement.tagName == "DIV") {
-          e.srcElement.remove();
+          removeChilds(container, ".bigImage");
         }
       };
       image.onclick = e => {
