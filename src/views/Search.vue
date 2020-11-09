@@ -26,7 +26,6 @@
 <script>
 import axios from "axios";
 import capitalize from "../functions/capitalize";
-import { baseHref } from "../config/config";
 
 export default {
   name: "Search",
@@ -35,7 +34,7 @@ export default {
     return {
       text: "Search Nasa image",
       placeholder: "",
-      href: `${baseHref}search/website_key/`,
+      href: `${process.env.VUE_APP_API_URL}search/website_key/`,
       searchData: "",
       saveSearchData: "",
       limit: 7,

@@ -25,7 +25,6 @@
 <script>
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
-import { baseHref, MAPBOX_TOKEN } from "../config/config";
 import capitalize from "../functions/capitalize";
 import addZero from "../functions/addZero";
 
@@ -39,8 +38,8 @@ export default {
       text: "",
       errorMessage: "",
       placeholder: "",
-      apiHref: `${baseHref}city/website_key/`,
-      passHref: `${baseHref}localisation/website_key/`,
+      apiHref: `${process.env.VUE_APP_API_URL}city/website_key/`,
+      passHref: `${process.env.VUE_APP_API_URL}localisation/website_key/`,
       searchData: "",
       saveSearchData: "",
       map: "",
@@ -59,7 +58,7 @@ export default {
     }
   },
   mounted() {
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+    mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN;
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _this = this;

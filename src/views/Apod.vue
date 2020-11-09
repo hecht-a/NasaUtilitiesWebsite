@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { baseHref } from "../config/config";
 import axios from "axios";
 
 export default {
@@ -21,10 +20,11 @@ export default {
   data() {
     return {
       text: "Nasa Image of the Day",
-      href: `${baseHref}apod/website_key`
+      href: `${process.env.VUE_APP_API_URL}apod/website_key`
     };
   },
   created() {
+    console.log(this.$route);
     document.title = this.$route.meta.title;
   },
   methods: {
