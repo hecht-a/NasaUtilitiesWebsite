@@ -1,5 +1,4 @@
 <template>
-  <title>Image of the Day</title>
   <div class="imageNasa">
     <h1 class="">
       {{ text }}
@@ -13,6 +12,8 @@
 
 <script>
 import axios from "axios";
+import removeChilds from "@/functions/removeChilds";
+import target from "@/functions/target";
 
 export default {
   name: "Apod",
@@ -45,6 +46,14 @@ export default {
           ).toLocaleDateString()}`;
           description.textContent = `Description: ${urlResolved.data.explanation}`;
           img.src = urlResolved.data.url;
+
+          img.addEventListener("click", () => {
+            this.displayBigImage(
+              urlResolved.data.url,
+              urlResolved.data.title,
+              urlResolved.data.explanation
+            );
+          });
         });
       });
     },
@@ -84,6 +93,58 @@ export default {
       const p = document.createElement("p");
       const getP = div.appendChild(p);
       return getP;
+    },
+    displayBigImage(url, title, description) {
+      url = url.replace(/thumb|small|medium/gm, "medium");
+      const div = document.createElement("div");
+      div.className = "bigImage";
+      const divImg = document.createElement("div");
+      divImg.className = "divImg";
+
+      const divElement = document.createElement("div");
+      divElement.className = "divElement";
+      const image = document.createElement("img");
+
+      const divH5 = document.createElement("div");
+      divH5.className = "divTitle";
+
+      const h5Title = document.createElement("h5");
+      h5Title.textContent = title;
+      divH5.appendChild(h5Title);
+
+      const pDescription = document.createElement("p");
+      pDescription.innerHTML = description;
+
+      target(pDescription);
+
+      divElement.append(divH5);
+      divElement.append(pDescription);
+
+      image.src = url;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      image.onerror = e => {
+        url = url.replace(/thumb|small|medium/gm, "thumb");
+        image.src = url;
+      };
+      divImg.appendChild(image);
+      div.appendChild(divImg);
+      div.appendChild(divElement);
+      document.getElementsByTagName("body")[0].appendChild(div);
+      window.addEventListener("keydown", e => {
+        if (e.keyCode === 27 && div) {
+          div.remove();
+        }
+      });
+      div.onclick = e => {
+        const container = document.querySelector("body");
+        if (e.srcElement.tagName == "DIV") {
+          removeChilds(container, ".bigImage");
+        }
+      };
+      image.onclick = e => {
+        e.preventDefault();
+        window.open(url, "_blank");
+      };
     }
   }
 };

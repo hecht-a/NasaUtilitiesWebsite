@@ -154,3 +154,8 @@ p
   word-wrap: break-word;
   padding: 0 20px;
 }
+
+.divElement p a{
+  color: rgb(196, 192, 192);
+  font-weight: bold;
+}

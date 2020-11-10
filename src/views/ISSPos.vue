@@ -1,6 +1,5 @@
 <template>
   <div id="map">
-    <title>ISS Position</title>
     <div class="inSpace">
       <p><u>Number astronauts in space:</u> {{ numberAstros }}</p>
       <ul></ul>

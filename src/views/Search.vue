@@ -1,5 +1,4 @@
 <template>
-  <title>Search</title>
   <div class="searchContainer">
     <h1>
       {{ text }}
@@ -25,8 +24,9 @@
 
 <script>
 import axios from "axios";
-import capitalize from "../functions/capitalize";
+import capitalize from "@/functions/capitalize";
 import removeChilds from "@/functions/removeChilds";
+import target from "@/functions/target";
 
 export default {
   name: "Search",
@@ -191,7 +191,9 @@ export default {
       divH5.appendChild(h5Title);
 
       const pDescription = document.createElement("p");
-      pDescription.textContent = description;
+      pDescription.innerHTML = description;
+
+      target(pDescription);
 
       divElement.append(divH5);
       divElement.append(pDescription);

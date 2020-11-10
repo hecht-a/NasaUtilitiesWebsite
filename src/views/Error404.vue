@@ -1,7 +1,5 @@
 <template>
-  <title>Error 404</title>
   <div class="body-container">
-    <!-- <canvas id="starfield" width="750" height="500"></canvas> -->
     <div class="stars"></div>
     <div class="twinkling"></div>
     <p>
