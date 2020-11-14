@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Apod from "../views/Apod.vue";
 import Search from "../views/Search.vue";
 import ISSPos from "../views/ISSPos.vue";
+import SpaceX from "../views/SpaceX.vue";
 import Error404 from "../views/Error404.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -38,6 +39,14 @@ const routes: Array<RouteRecordRaw> = [
       title: "ISS Position"
     },
     component: ISSPos
+  },
+  {
+    path: "/spacex",
+    name: "SpaceX",
+    meta: {
+      title: "Upcoming Launches"
+    },
+    component: SpaceX
   },
   {
     path: "/404",

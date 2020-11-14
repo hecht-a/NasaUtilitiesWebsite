@@ -1,26 +1,33 @@
 <template>
-  <header>
-    <div class="navbar bg-dark">
-      <a href="home" class="">
-        <img class="logo" src="./assets/nasaBlue.png" alt="" />
-      </a>
-      <input type="checkbox" name="icon" id="icon" />
-      <label for="icon" class="a"><i class="fas fa-bars icon"></i></label>
-      <div class="d-flex">
-        <ul>
-          <li>
-            <router-link to="/">Home</router-link>
-            <router-link to="/apod">Image of the Day</router-link>
-            <router-link to="/search">Search image</router-link>
-            <router-link to="/isspos">ISS Position</router-link>
-          </li>
-        </ul>
+  <div>
+    <header>
+      <div class="navbar bg-dark">
+        <a href="home" class="">
+          <img class="logo" src="./assets/nasaBlue.png" alt="" />
+        </a>
+        <input type="checkbox" name="icon" id="icon" />
+        <label for="icon" class="a"><i class="fas fa-bars icon"></i></label>
+        <div class="d-flex">
+          <ul>
+            <li>
+              <router-link to="/">Home</router-link>
+              <router-link to="/apod">Image of the Day</router-link>
+              <router-link to="/search">Search image</router-link>
+              <router-link to="/isspos">ISS Position</router-link>
+              <ul>
+                <li>
+                  <router-link to="/spacex">upcoming launches</router-link>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
+      <div class="under-nav"></div>
+    </header>
+    <div class="container">
+      <router-view />
     </div>
-    <div class="under-nav"></div>
-  </header>
-  <div class="container">
-    <router-view />
   </div>
 </template>
 
