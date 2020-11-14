@@ -18,8 +18,8 @@
     <div class="errorMessage">
       <p class="error">{{ errorMessage }}</p>
     </div>
+    {{ getImageArray(href) }}
   </div>
-  {{ getImageArray(href) }}
 </template>
 
 <script>

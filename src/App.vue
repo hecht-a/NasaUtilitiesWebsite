@@ -14,11 +14,7 @@
               <router-link to="/apod">Image of the Day</router-link>
               <router-link to="/search">Search image</router-link>
               <router-link to="/isspos">ISS Position</router-link>
-              <ul>
-                <li>
-                  <router-link to="/spacex">upcoming launches</router-link>
-                </li>
-              </ul>
+              <router-link to="/spacex">upcoming launches</router-link>
             </li>
           </ul>
         </div>
@@ -129,13 +125,13 @@ ul {
   font-family: astrospace;
 }
 
-@media screen and (min-width: 930px) {
+@media screen and (min-width: 980px) {
   .icon {
     display: none;
   }
 }
 
-@media screen and (max-width: 929px) {
+@media screen and (max-width: 979px) {
   .icon {
     justify-self: flex-end;
     cursor: pointer;
