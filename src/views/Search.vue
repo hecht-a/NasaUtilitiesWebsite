@@ -250,6 +250,13 @@ export default {
 }
 
 .center {
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+
   img:hover {
     cursor: pointer;
   }
@@ -303,15 +310,6 @@ export default {
     font-size: 12px;
   }
 
-  .center {
-    height: auto;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-
   .property-card {
     height: 18em;
     width: 14em;
@@ -337,8 +335,6 @@ export default {
     background-repeat: no-repeat;
   }
 
-  /* Bottom Card Section */
-
   .property-description {
     background-color: #fafafc;
     height: 11em;
@@ -350,11 +346,11 @@ export default {
     text-align: center;
     overflow: auto;
     word-wrap: break-word;
-  }
 
-  .property-description p,
-  h5 {
-    padding: 0 15px;
+    p,
+    h5 {
+      padding: 0 15px;
+    }
   }
 
   .property-image-title {
@@ -379,6 +375,11 @@ export default {
     overflow-x: hidden;
     padding: 0;
     text-align: center;
+
+    p {
+      word-wrap: break-word;
+      padding: 0 20px;
+    }
   }
 
   .divTitle {
@@ -386,11 +387,6 @@ export default {
     height: auto;
     padding: 10px 0;
     background: rgba(52, 58, 64);
-  }
-
-  .divElement p {
-    word-wrap: break-word;
-    padding: 0 20px;
   }
 }
 </style>

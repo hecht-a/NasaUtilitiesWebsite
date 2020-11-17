@@ -1,8 +1,7 @@
 <template>
   <ul class="timeline">
-    <!-- Item 1 -->
     <li v-for="launch in launches" :key="launch.flight_number">
-      <div :class="side[launch.i % 2]">
+      <div class="direction">
         <div class="flag-wrapper">
           <span class="hexa"></span>
           <span class="flag">{{ launch.mission_name }}</span>
@@ -33,21 +32,22 @@
 
 <script>
 import axios from "axios";
-import moment from "moment";
 
 export default {
   name: "Error404",
   components: {},
-  data: () => ({
-    launches: [],
-    side: ["direction-l", "direction-r"]
-  }),
+  data: () => {
+    return {
+      launches: []
+    };
+  },
   async created() {
     document.title = this?.$route.meta.title;
 
     const { data } = await axios.get(
       "https://api.spacexdata.com/v3/launches/upcoming"
     );
+
     data.forEach((launch, i) => {
       this.launches.push(launch);
       launch.i = i;
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     launchDate(date) {
-      return moment(date).format("DD/MM/YYYY");
+      return new Date(date).toLocaleString();
     }
   }
 };
@@ -69,15 +69,16 @@ body {
   color: #333;
 }
 
-header h1 {
-  text-align: center;
-  font-weight: bold;
-  margin-top: 0;
-}
-
-header p {
-  text-align: center;
-  margin-bottom: 0;
+header {
+  p {
+    text-align: center;
+    margin-bottom: 0;
+  }
+  h1 {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 0;
+  }
 }
 
 .hexa {
@@ -91,30 +92,30 @@ header p {
   color: #3c3c3c;
   position: relative;
   margin-top: 15px;
-}
 
-.hexa:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-bottom: 15px solid #f0f0f0;
-  border-left: 30px solid transparent;
-  border-right: 30px solid transparent;
-  top: -15px;
-}
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 15px solid #f0f0f0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    top: -15px;
+  }
 
-.hexa:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-left: 30px solid transparent;
-  border-right: 30px solid transparent;
-  border-top: 15px solid #f0f0f0;
-  bottom: -15px;
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-top: 15px solid #f0f0f0;
+    bottom: -15px;
+  }
 }
 
 .timeline {
@@ -123,100 +124,130 @@ header p {
   width: 100%;
   margin-top: 20px;
   list-style-type: none;
+
+  &:before {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    content: " ";
+    display: block;
+    width: 2px;
+    height: 100%;
+    margin-left: -1px;
+    background: -moz-linear-gradient(
+      top,
+      rgba(213, 213, 213, 0) 0%,
+      rgb(213, 213, 213) 8%,
+      rgb(213, 213, 213) 92%,
+      rgba(213, 213, 213, 0) 100%
+    );
+    background: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0%, rgba(30, 87, 153, 1)),
+      color-stop(100%, rgba(125, 185, 232, 1))
+    );
+    background: -webkit-linear-gradient(
+      top,
+      rgba(213, 213, 213, 0) 0%,
+      rgb(213, 213, 213) 8%,
+      rgb(213, 213, 213) 92%,
+      rgba(213, 213, 213, 0) 100%
+    );
+    background: -o-linear-gradient(
+      top,
+      rgba(213, 213, 213, 0) 0%,
+      rgb(213, 213, 213) 8%,
+      rgb(213, 213, 213) 92%,
+      rgba(213, 213, 213, 0) 100%
+    );
+    background: -ms-linear-gradient(
+      top,
+      rgba(213, 213, 213, 0) 0%,
+      rgb(213, 213, 213) 8%,
+      rgb(213, 213, 213) 92%,
+      rgba(213, 213, 213, 0) 100%
+    );
+    background: linear-gradient(
+      to bottom,
+      rgba(213, 213, 213, 0) 0%,
+      rgb(213, 213, 213) 8%,
+      rgb(213, 213, 213) 92%,
+      rgba(213, 213, 213, 0) 100%
+    );
+    z-index: 5;
+  }
+
+  li {
+    padding: 2em 0;
+  }
+
+  .hexa {
+    width: 16px;
+    height: 10px;
+    position: absolute;
+    background: #2c87a5;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    top: -30px;
+    margin-top: 0;
+
+    &:before {
+      border-bottom: 4px solid #2c87a5;
+      border-left-width: 8px;
+      border-right-width: 8px;
+      top: -4px;
+    }
+
+    &:after {
+      border-left-width: 8px;
+      border-right-width: 8px;
+      border-top: 4px solid #2c87a5;
+      bottom: -4px;
+    }
+  }
 }
 
-.timeline:before {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  content: " ";
-  display: block;
-  width: 2px;
-  height: 100%;
-  margin-left: -1px;
-  background: rgb(213, 213, 213);
-  background: -moz-linear-gradient(
-    top,
-    rgba(213, 213, 213, 0) 0%,
-    rgb(213, 213, 213) 8%,
-    rgb(213, 213, 213) 92%,
-    rgba(213, 213, 213, 0) 100%
-  );
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0%, rgba(30, 87, 153, 1)),
-    color-stop(100%, rgba(125, 185, 232, 1))
-  );
-  background: -webkit-linear-gradient(
-    top,
-    rgba(213, 213, 213, 0) 0%,
-    rgb(213, 213, 213) 8%,
-    rgb(213, 213, 213) 92%,
-    rgba(213, 213, 213, 0) 100%
-  );
-  background: -o-linear-gradient(
-    top,
-    rgba(213, 213, 213, 0) 0%,
-    rgb(213, 213, 213) 8%,
-    rgb(213, 213, 213) 92%,
-    rgba(213, 213, 213, 0) 100%
-  );
-  background: -ms-linear-gradient(
-    top,
-    rgba(213, 213, 213, 0) 0%,
-    rgb(213, 213, 213) 8%,
-    rgb(213, 213, 213) 92%,
-    rgba(213, 213, 213, 0) 100%
-  );
-  background: linear-gradient(
-    to bottom,
-    rgba(213, 213, 213, 0) 0%,
-    rgb(213, 213, 213) 8%,
-    rgb(213, 213, 213) 92%,
-    rgba(213, 213, 213, 0) 100%
-  );
-  z-index: 5;
-}
-
-.timeline li {
-  padding: 2em 0;
-}
-
-.timeline .hexa {
-  width: 16px;
-  height: 10px;
-  position: absolute;
-  background: #00c4f3;
-  z-index: 5;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  top: -30px;
-  margin-top: 0;
-}
-
-.timeline .hexa:before {
-  border-bottom: 4px solid #00c4f3;
-  border-left-width: 8px;
-  border-right-width: 8px;
-  top: -4px;
-}
-
-.timeline .hexa:after {
-  border-left-width: 8px;
-  border-right-width: 8px;
-  border-top: 4px solid #00c4f3;
-  bottom: -4px;
-}
-
-.direction-l,
-.direction-r {
+.direction {
   float: none;
   width: 100%;
   text-align: center;
+
+  .flag {
+    -webkit-box-shadow: 0 0 1px rgba(0, 0, 0);
+    -moz-box-shadow: 0 0 1px rgba(0, 0, 0);
+    box-shadow: 0 0 3px rgb(0, 0, 0);
+
+    &:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -15px;
+      height: 0;
+      width: 0;
+      margin-left: -8px;
+      border: solid transparent;
+      border-bottom-color: rgb(255, 255, 255);
+      border-width: 8px;
+      pointer-events: none;
+    }
+  }
+
+  .time-wrapper {
+    float: none;
+  }
+
+  .desc {
+    position: relative;
+    margin: 1em 4em 0 4em;
+    padding: 1em;
+    z-index: 15;
+    border-radius: 5px;
+  }
 }
 
 .flag-wrapper {
@@ -235,35 +266,6 @@ header p {
   border-radius: 5px;
 }
 
-.direction-l .flag:after,
-.direction-r .flag:after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -15px;
-  height: 0;
-  width: 0;
-  margin-left: -8px;
-  border: solid transparent;
-  border-bottom-color: rgb(255, 255, 255);
-  border-width: 8px;
-  pointer-events: none;
-}
-
-.direction-l .flag {
-  -webkit-box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.15),
-    0 0 1px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.15);
-  box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.15);
-}
-
-.direction-r .flag {
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15),
-    0 0 1px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.15);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.15);
-}
-
 .time-wrapper {
   display: block;
   position: relative;
@@ -273,29 +275,22 @@ header p {
   color: #fff;
 }
 
-.direction-l .time-wrapper {
-  float: none;
-}
-
-.direction-r .time-wrapper {
-  float: none;
-}
-
 .time {
-  background: #00c4f3;
+  background: #88d6f0;
   display: inline-block;
   padding: 8px;
+  border-radius: 5px;
 }
 
 .desc {
   position: relative;
   margin: 1em 0 0 0;
   padding: 1em;
-  background: rgb(254, 254, 254);
-  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+  background: #88d6f0;
   z-index: 15;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0);
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0);
+  box-shadow: 0 0 4px rgb(0, 0, 0);
 
   p {
     font-size: 0.9em;
@@ -308,104 +303,6 @@ header p {
 
   h5 {
     font-size: 1.1em;
-  }
-}
-
-.direction-l .desc,
-.direction-r .desc {
-  position: relative;
-  margin: 1em 1em 0 1em;
-  padding: 1em;
-  z-index: 15;
-}
-
-@media (min-width: 979px) {
-  .timeline {
-    width: 660px;
-    margin: 0 auto;
-    margin-top: 20px;
-  }
-
-  .timeline li:after {
-    content: "";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-  }
-
-  .timeline .hexa {
-    left: -28px;
-    right: auto;
-    top: 8px;
-  }
-
-  .timeline .direction-l .hexa {
-    left: auto;
-    right: -28px;
-  }
-
-  .direction-l {
-    position: relative;
-    width: 310px;
-    float: left;
-    text-align: right;
-  }
-
-  .direction-r {
-    position: relative;
-    width: 310px;
-    float: right;
-    text-align: left;
-  }
-
-  .flag-wrapper {
-    display: inline-block;
-  }
-
-  .flag {
-    font-size: 18px;
-  }
-
-  .direction-l .flag:after {
-    left: auto;
-    right: -16px;
-    top: 50%;
-    margin-top: -8px;
-    border: solid transparent;
-    border-left-color: rgb(254, 254, 254);
-    border-width: 8px;
-  }
-
-  .direction-r .flag:after {
-    top: 50%;
-    margin-top: -8px;
-    border: solid transparent;
-    border-right-color: rgb(254, 254, 254);
-    border-width: 8px;
-    left: -8px;
-  }
-
-  .time-wrapper {
-    display: inline;
-    vertical-align: middle;
-    margin: 0;
-  }
-
-  .direction-l .time-wrapper {
-    float: left;
-  }
-
-  .direction-r .time-wrapper {
-    float: right;
-  }
-
-  .time {
-    padding: 5px 10px;
-  }
-
-  .direction-r .desc {
-    margin: 1em 0 0 0.75em;
   }
 }
 </style>

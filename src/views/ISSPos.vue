@@ -13,7 +13,9 @@
           />
         </div>
         <h2 class="errorCity">{{ errorMessage }}</h2>
-        {{ searchCity() }}
+        <p style="display: none !important; visibility: hidden;">
+          {{ searchCity() }}
+        </p>
       </div>
     </div>
   </div>
@@ -22,14 +24,13 @@
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import capitalize from "../functions/capitalize";
-import addZero from "../functions/addZero";
 
 export default {
   name: "ISSPos",
   components: {},
   data() {
     return {
-      href: "http://api.open-notify.org/astros.json",
+      href: "http://api.open-notify.org/iss-now.json",
       numberAstros: 0,
       text: "",
       errorMessage: "",
@@ -66,7 +67,7 @@ export default {
     });
 
     this.marker = new mapboxgl.Marker();
-    const { data } = await axios.get("http://api.open-notify.org/iss-now.json");
+    const { data } = await axios.get(this.href);
     const lon = data.iss_position.longitude;
     const lat = data.iss_position.latitude;
 
@@ -85,9 +86,7 @@ export default {
     this.map.setCenter(this.marker.getLngLat());
 
     window.setInterval(async () => {
-      const { data } = await axios.get(
-        "http://api.open-notify.org/iss-now.json"
-      );
+      const { data } = await axios.get(_this.href);
       const lon = data.iss_position.longitude;
       const lat = data.iss_position.latitude;
 
@@ -105,141 +104,49 @@ export default {
     }, 1000);
   },
   methods: {
-    getInSpace() {
-      const ul = document.querySelector(".inSpace > ul");
-
-      axios
-        .get(this.href)
-        .then(resp => {
-          Promise.resolve(resp)
-            .then(urlResolved => {
-              this.numberAstros = urlResolved.data.number;
-
-              const astros = urlResolved.data.people;
-              astros.forEach(astro => {
-                const li = document.createElement("li");
-
-                const a = document.createElement("a");
-                a.href = `https://wikipedia.org/wiki/${astro.name}`;
-                a.target = "_blank";
-                a.text = astro.name;
-
-                li.appendChild(a);
-                li.append(` in ${astro.craft}`);
-                ul.appendChild(li);
-              });
-            })
-            .catch(err => {
-              if (err) {
-                this.text = "Erreur de recherche.";
-                return;
-              }
-            });
-        })
-        .catch(err => {
-          if (err) {
-            this.text = "Erreur de recherche.";
-            return;
-          }
-        });
-    },
-    searchCity() {
+    async searchCity() {
       if (this.searchData === "") return;
       this.errorMessage = "";
 
       this.text = capitalize(this.searchData);
-      axios
-        .get(`${this.apiHref}${this.searchData}`)
-        .then(resp => {
-          Promise.resolve(resp)
-            .then(urlRes => {
-              const LAT = urlRes.data.features[0].geometry.coordinates[1];
-              const LON = urlRes.data.features[0].geometry.coordinates[0];
+      const { data } = await axios.get(`${this.apiHref}${this.searchData}`);
 
-              if (this.cityMarker) this.cityMarker.remove();
+      const LAT = data.features[0].geometry.coordinates[1];
+      const LON = data.features[0].geometry.coordinates[0];
 
-              this.cityMarker = new mapboxgl.Marker();
-              this.cityMarker
-                .setLngLat([LON, LAT])
-                .setPopup(
-                  new mapboxgl.Popup().setHTML(
-                    `
+      if (this.cityMarker) this.cityMarker.remove();
+
+      this.cityMarker = new mapboxgl.Marker();
+      this.cityMarker
+        .setLngLat([LON, LAT])
+        .setPopup(
+          new mapboxgl.Popup().setHTML(
+            `
                   <h2 class="cityMarkerTitle">${capitalize(this.text)}</h2>
                   <ul class="cityMarker">
                   </ul>
                   `
-                  )
-                )
-                .addTo(this.map)
-                .togglePopup();
-              this.map.setCenter(this.cityMarker.getLngLat());
+          )
+        )
+        .addTo(this.map)
+        .togglePopup();
 
-              const ul = document.querySelector(".cityMarker");
+      this.map.setCenter(this.cityMarker.getLngLat());
 
-              axios
-                .get(`${this.passHref}${LAT}/${LON}`)
-                .then(response => {
-                  Promise.resolve(response)
-                    .then(urlResolved => {
-                      urlResolved.data["response"].forEach(pass => {
-                        const day = new Date(pass.risetime * 1000).getDay();
-                        const month = new Date(pass.risetime * 1000).getMonth();
-                        const year = new Date(
-                          pass.risetime * 1000
-                        ).getFullYear();
-                        const hours = new Date(pass.risetime * 1000).getHours();
-                        const minutes = new Date(
-                          pass.risetime * 1000
-                        ).getMinutes();
-                        const seconds = new Date(
-                          pass.risetime * 1000
-                        ).getSeconds();
+      const ul = document.querySelector(".cityMarker");
 
-                        const date = `${addZero(day)}/${addZero(
-                          month
-                        )}/${year}`;
-                        const hour = `${addZero(hours)}:${addZero(
-                          minutes
-                        )}:${addZero(seconds)}`;
+      let dataBis = await axios.get(`${this.passHref}${LAT}/${LON}`);
+      dataBis = dataBis.data;
+      dataBis["response"].forEach(pass => {
+        const ts = pass.risetime * 1000;
+        const time = new Date(ts).toLocaleString();
 
-                        const li = document.createElement("li");
-                        li.textContent = `${pass.duration}sec (${Number(
-                          pass.duration / 60
-                        ).toFixed(2)}min) on ${date} at ${hour}`;
-                        ul.appendChild(li);
-                      });
-                    })
-                    .catch(err => {
-                      if (err) {
-                        this.className = "error";
-                        this.errorMessage = "Erreur de recherche.";
-                        return err;
-                      }
-                    });
-                })
-                .catch(err => {
-                  if (err) {
-                    this.className = "error";
-                    this.errorMessage = "Erreur de recherche.";
-                    return err;
-                  }
-                });
-            })
-            .catch(err => {
-              if (err) {
-                this.className = "error";
-                this.errorMessage = "Erreur de recherche.";
-                return err;
-              }
-            });
-        })
-        .catch(err => {
-          if (err) {
-            this.className = "error";
-            this.errorMessage = "Erreur de recherche.";
-            return;
-          }
-        });
+        const li = document.createElement("li");
+        li.textContent = `${pass.duration}sec (${Number(
+          pass.duration / 60
+        ).toFixed(2)}min) on ${time}`;
+        ul.appendChild(li);
+      });
       this.saveSearchData = this.searchData;
       this.searchData = "";
     }
@@ -247,7 +154,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="less">
 #map {
   display: flex;
   width: 100%;
@@ -258,10 +165,6 @@ export default {
 @media screen and (max-width: 929px) {
   #map {
     height: calc(100vh - 60px);
-  }
-
-  .inSpace {
-    max-height: 30vh !important;
   }
 }
 
@@ -274,29 +177,33 @@ export default {
   height: 40px;
 }
 
-.inSpace ul {
-  margin: 0;
-  padding: 0;
-}
-
-.inSpace ul li a {
-  text-decoration: underline;
-  color: rgb(136, 214, 240);
-}
-
 .inSpace {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   flex-direction: column;
   z-index: 999;
   background-color: #343a40ad;
   color: #fff;
   width: auto;
   height: auto;
-  max-height: 10vh;
+  max-height: 15vh;
   margin: 20px 20px;
   padding: 10px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li a {
+      text-decoration: underline;
+      color: rgb(136, 214, 240);
+    }
+  }
+
+  h2 {
+    margin-top: 0;
+  }
 }
 
 .errorCity {
