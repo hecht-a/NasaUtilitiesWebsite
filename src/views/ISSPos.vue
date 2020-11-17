@@ -24,6 +24,7 @@
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import capitalize from "../functions/capitalize";
+import minsec from "../functions/minsec";
 
 export default {
   name: "ISSPos",
@@ -122,10 +123,9 @@ export default {
         .setPopup(
           new mapboxgl.Popup().setHTML(
             `
-                  <h2 class="cityMarkerTitle">${capitalize(this.text)}</h2>
-                  <ul class="cityMarker">
-                  </ul>
-                  `
+            <h2 class="cityMarkerTitle">${capitalize(this.text)}</h2>
+            <ul class="cityMarker"></ul>
+            `
           )
         )
         .addTo(this.map)
@@ -142,9 +142,9 @@ export default {
         const time = new Date(ts).toLocaleString();
 
         const li = document.createElement("li");
-        li.textContent = `${pass.duration}sec (${Number(
-          pass.duration / 60
-        ).toFixed(2)}min) on ${time}`;
+        li.textContent = `${pass.duration}sec (${minsec(
+          pass.duration
+        )}) on ${time}`;
         ul.appendChild(li);
       });
       this.saveSearchData = this.searchData;

@@ -1,4 +1,12 @@
-module.exports = function removeChilds(parent, selector = "") {
+/**
+ * @param  {HTMLElement} parent
+ * @param  {string|null} selector
+ * @returns void
+ */
+module.exports = function removeChilds(
+  parent: HTMLElement,
+  selector: string | null
+): void {
   if (selector) {
     const div = document.querySelector(selector);
     if (!div) return;
@@ -8,4 +16,5 @@ module.exports = function removeChilds(parent, selector = "") {
       parent.removeChild(parent.firstChild);
     }
   }
+  return;
 };
