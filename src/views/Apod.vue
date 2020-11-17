@@ -2,11 +2,12 @@
   <div class="imageNasa">
     <h1 class="">
       {{ text }}
+      {{ title }}
     </h1>
     <br />
-    {{ createApod(href) }}
     <div class="infos"></div>
     <div class="image"></div>
+    <!-- {{ createApod(href) }} -->
   </div>
 </template>
 
@@ -21,40 +22,33 @@ export default {
   data() {
     return {
       text: "Nasa Image of the Day",
-      href: `${process.env.VUE_APP_API_URL}apod/website_key`
+      href: `${process.env.VUE_APP_API_URL}apod/website_key`,
+      title: ""
     };
   },
   created() {
     document.title = this.$route.meta.title;
+    this.createApod(this.href);
   },
   methods: {
-    createApod(url) {
-      axios.get(`${url}`).then(resp => {
-        Promise.resolve(resp).then(urlResolved => {
-          const title = this.createTitle();
-          const author = this.createAuthor();
-          const date = this.createDate();
-          const description = this.createDescription();
-          const img = urlResolved.data.url.includes("youtube")
-            ? this.createVideo()
-            : this.createImg();
+    async createApod(url) {
+      const { data } = await axios.get(`${url}`);
+      const title = this.createTitle();
+      const author = this.createAuthor();
+      const date = this.createDate();
+      const description = this.createDescription();
+      const img = data.url.includes("youtube")
+        ? this.createVideo()
+        : this.createImg();
 
-          title.textContent = `Title: ${urlResolved.data.title}`;
-          author.textContent = `Author: ${urlResolved.data.copyright}`;
-          date.textContent = `Date: ${new Date(
-            urlResolved.data.date
-          ).toLocaleDateString()}`;
-          description.textContent = `Description: ${urlResolved.data.explanation}`;
-          img.src = urlResolved.data.url;
+      title.textContent = `Title: ${data.title}`;
+      author.textContent = `Author: ${data.copyright}`;
+      date.textContent = `Date: ${new Date(data.date).toLocaleDateString()}`;
+      description.textContent = `Description: ${data.explanation}`;
+      img.src = data.url;
 
-          img.addEventListener("click", () => {
-            this.displayBigImage(
-              urlResolved.data.url,
-              urlResolved.data.title,
-              urlResolved.data.explanation
-            );
-          });
-        });
+      img.addEventListener("click", () => {
+        this.displayBigImage(data.url, data.title, data.explanation);
       });
     },
     createImg() {

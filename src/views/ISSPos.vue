@@ -1,8 +1,6 @@
 <template>
   <div id="map">
     <div class="inSpace">
-      <p><u>Number astronauts in space:</u> {{ numberAstros }}</p>
-      <ul></ul>
       <div class="searchContainerMap">
         <h2>ISS flyover</h2>
         <div class="searchComponentsMap">
@@ -12,7 +10,6 @@
             id="searchMap"
             :placeholder="placeholder"
             v-model.lazy="search"
-            autofocus
           />
         </div>
         <h2 class="errorCity">{{ errorMessage }}</h2>
@@ -56,7 +53,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN;
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -69,44 +66,43 @@ export default {
     });
 
     this.marker = new mapboxgl.Marker();
-    axios.get("http://api.open-notify.org/iss-now.json").then(resp => {
-      const lon = resp.data.iss_position.longitude;
-      const lat = resp.data.iss_position.latitude;
+    const { data } = await axios.get("http://api.open-notify.org/iss-now.json");
+    const lon = data.iss_position.longitude;
+    const lat = data.iss_position.latitude;
 
-      this.marker
+    this.marker
+      .setLngLat([lon, lat])
+      .setPopup(
+        new mapboxgl.Popup().setHTML(
+          `
+          <h2>ISS Position</h2>
+          <p>[${lat}, ${lon}]</p>
+          `
+        )
+      )
+      .addTo(this.map)
+      .togglePopup();
+    this.map.setCenter(this.marker.getLngLat());
+
+    window.setInterval(async () => {
+      const { data } = await axios.get(
+        "http://api.open-notify.org/iss-now.json"
+      );
+      const lon = data.iss_position.longitude;
+      const lat = data.iss_position.latitude;
+
+      _this.marker
         .setLngLat([lon, lat])
         .setPopup(
           new mapboxgl.Popup().setHTML(
             `
-          <h2>ISS Position</h2>
-          <p>[${lat}, ${lon}]</p>
-          `
-          )
-        )
-        .addTo(this.map)
-        .togglePopup();
-      this.map.setCenter(this.marker.getLngLat());
-    });
-
-    window.setInterval(function() {
-      axios.get("http://api.open-notify.org/iss-now.json").then(resp => {
-        const lon = resp.data.iss_position.longitude;
-        const lat = resp.data.iss_position.latitude;
-
-        _this.marker
-          .setLngLat([lon, lat])
-          .setPopup(
-            new mapboxgl.Popup().setHTML(
-              `
             <h2>ISS Position</h2>
             <p>[${lat}, ${lon}]</p>
             `
-            )
           )
-          .togglePopup();
-      });
+        )
+        .togglePopup();
     }, 1000);
-    this.getInSpace();
   },
   methods: {
     getInSpace() {
@@ -298,7 +294,7 @@ export default {
   color: #fff;
   width: auto;
   height: auto;
-  max-height: 20vh;
+  max-height: 10vh;
   margin: 20px 20px;
   padding: 10px;
 }

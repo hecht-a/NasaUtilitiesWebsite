@@ -37,7 +37,6 @@ export default {
       placeholder: "",
       href: `${process.env.VUE_APP_API_URL}search/website_key/`,
       searchData: "",
-      saveSearchData: "",
       limit: 7,
       errorMessage: ""
     };
