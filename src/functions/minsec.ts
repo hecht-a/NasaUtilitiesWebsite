@@ -1,13 +1,15 @@
+import addZero from "./addZero";
+
 /**
  * @param  {number} time
  * @returns string
  */
-module.exports = function minsec(time: number): string {
+export default function minsec(time: number): string {
   const mind: number = time % (60 * 60);
-  const minutes: number = Math.floor(mind / 60);
+  const minutes = addZero(Math.floor(mind / 60));
 
   const secd: number = mind % 60;
-  const seconds: number = Math.ceil(secd);
+  const seconds = addZero(Math.ceil(secd));
 
   return `${minutes}:${seconds}`;
-};
+}

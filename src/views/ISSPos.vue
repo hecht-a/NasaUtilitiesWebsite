@@ -42,7 +42,9 @@ export default {
       saveSearchData: "",
       map: "",
       marker: "",
-      cityMarker: ""
+      cityMarker: "",
+      issPopup: "",
+      issPopupEnabled: true
     };
   },
   computed: {
@@ -72,36 +74,36 @@ export default {
     const lon = data.iss_position.longitude;
     const lat = data.iss_position.latitude;
 
+    const popup = new mapboxgl.Popup().setHTML(
+      `
+                  <h2>ISS Position</h2>
+                  <p>[${lat}, ${lon}]</p>
+                  `
+    );
+
     this.marker
       .setLngLat([lon, lat])
-      .setPopup(
-        new mapboxgl.Popup().setHTML(
-          `
-          <h2>ISS Position</h2>
-          <p>[${lat}, ${lon}]</p>
-          `
-        )
-      )
+      .setPopup(popup)
       .addTo(this.map)
       .togglePopup();
     this.map.setCenter(this.marker.getLngLat());
+    this.issPopup = popup.getElement();
 
     window.setInterval(async () => {
       const { data } = await axios.get(_this.href);
       const lon = data.iss_position.longitude;
       const lat = data.iss_position.latitude;
 
-      _this.marker
-        .setLngLat([lon, lat])
-        .setPopup(
-          new mapboxgl.Popup().setHTML(
-            `
+      _this.marker.setLngLat([lon, lat]).setPopup(
+        new mapboxgl.Popup().setHTML(
+          `
             <h2>ISS Position</h2>
             <p>[${lat}, ${lon}]</p>
             `
-          )
         )
-        .togglePopup();
+      );
+
+      this.issPopupEnabled ? _this.marker.togglePopup() : "";
     }, 1000);
   },
   methods: {
@@ -117,19 +119,32 @@ export default {
 
       if (this.cityMarker) this.cityMarker.remove();
 
-      this.cityMarker = new mapboxgl.Marker();
-      this.cityMarker
-        .setLngLat([LON, LAT])
-        .setPopup(
-          new mapboxgl.Popup().setHTML(
-            `
+      this.issPopup.remove();
+      this.issPopupEnabled = false;
+
+      const popup = new mapboxgl.Popup().setHTML(
+        `
             <h2 class="cityMarkerTitle">${capitalize(this.text)}</h2>
             <ul class="cityMarker"></ul>
             `
-          )
-        )
+      );
+
+      this.cityMarker = new mapboxgl.Marker();
+      this.cityMarker
+        .setLngLat([LON, LAT])
+        .setPopup(popup)
         .addTo(this.map)
         .togglePopup();
+
+      const issPopup = this.marker.getPopup();
+
+      popup.on("close", () => {
+        this.issPopupEnabled = true;
+      });
+
+      popup.on("open", () => {
+        this.issPopupEnabled = false;
+      });
 
       this.map.setCenter(this.cityMarker.getLngLat());
 
@@ -155,6 +170,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+.editedPopup {
+  display: none !important;
+}
+
 #map {
   display: flex;
   width: 100%;
